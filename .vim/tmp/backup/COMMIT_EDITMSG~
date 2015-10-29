@@ -1,0 +1,268 @@
+Configured passport.
+
+# Please enter the commit message for your changes. Lines starting
+# with '#' will be ignored, and an empty message aborts the commit.
+# On branch feature/auth
+# Changes to be committed:
+#	modified:   app.js
+#	new file:   config/passport.js
+#	new file:   models/Users.js
+#	modified:   package.json
+#	modified:   routes/index.js
+#
+# ------------------------ >8 ------------------------
+# Do not touch the line above.
+# Everything below will be removed.
+diff --git a/app.js b/app.js
+index 2681f32..cfd1138 100644
+--- a/app.js
++++ b/app.js
+@@ -1,20 +1,26 @@
+-var express = require('express');
+-var path = require('path');
+-var favicon = require('serve-favicon');
+-var logger = require('morgan');
+-var cookieParser = require('cookie-parser');
+-var bodyParser = require('body-parser');
++var express, path, favicon, logger, cookieParser, bodyParser, mongoose, passport,
++    routes, users,
++    app;
++
++express = require('express');
++path = require('path');
++favicon = require('serve-favicon');
++logger = require('morgan');
++cookieParser = require('cookie-parser');
++bodyParser = require('body-parser');
++mongoose = require('mongoose');
++passport = require('passport');
++
++routes = require('./routes/index');
++users = require('./routes/users');
+ 
+-var mongoose = require('mongoose');
+ require('./models/Posts');
+ require('./models/Comments');
++require('./models/Users');
++require('./config/passport');
+ 
+ mongoose.connect('mongodb://localhost/news');
+-
+-var routes = require('./routes/index');
+-var users = require('./routes/users');
+-
+-var app = express();
++app = express();
+ 
+ // view engine setup
+ app.set('views', path.join(__dirname, 'views'));
+@@ -28,6 +34,10 @@ app.use(bodyParser.urlencoded({ extended: false }));
+ app.use(cookieParser());
+ app.use(express.static(path.join(__dirname, 'public')));
+ 
++// Initialize passport
++app.use(passport.initialize());
++
++// Endpoints
+ app.use('/', routes);
+ app.use('/users', users);
+ 
+diff --git a/config/passport.js b/config/passport.js
+new file mode 100644
+index 0000000..90979aa
+--- /dev/null
++++ b/config/passport.js
+@@ -0,0 +1,21 @@
++var passport, LocalStrategy, mongoose, User;
++
++passport = require('passport');
++LocalStrategy = require('passport-local').Strategy;
++mongoose = require('mongoose');
++User = require('User');
++
++passport.use(new LocalStrategy(
++  function(username, password, done) {
++    User.findOne({ username: username  }, function(err, user){
++      if(err) { return done(err);  }
++      if(!user) {
++        return done(null, false, { message: 'Incorrect username.' });
++      }
++      if(!user.validPassword(password)) {
++        return done(null, false, { message: 'Incorrect password.' });
++      }
++      return done(null, user);
++    });
++  }
++));
+diff --git a/models/Users.js b/models/Users.js
+new file mode 100644
+index 0000000..daa866a
+--- /dev/null
++++ b/models/Users.js
+@@ -0,0 +1,40 @@
++var mongoose, crypto, jwt, UserSchema;
++
++mongoose = require('mongoose');
++crypto = require('crypto');
++jwt = require('jsonwebtoken');
++
++UserSchema = new mongoose.Schema({
++  username: {type: String, lowercase: true, unique: true},
++  hash: String,
++  salt: String,
++});
++
++UserSchema.methods.setPassword = function(password) {
++  this.salt = crypto.randomBytes(16).toString('hex');
++  this.hash = crypto.pbkdf2Sync(password, this.salt, 1000, 64).toString('hex');
++};
++
++UserSchema.methods.validPassword = function(password) {
++  var hash;
++
++  hash = crypto.pbkdf2Sync(password, this.salt, 1000, 64).toString('hex');
++  return this.hash === hash;
++};
++
++UserSchema.methods.generateJWT = function(password) {
++  var today, exp;
++
++  // Set expiration to 60 days
++  today = new Date();
++  exp = new Date(today);
++  exp.setDate(today.getDate() + 60);
++
++  return jwt.sign({
++    _id: this._id,
++    username: this.username,
++    exp: parseInt(exp.getTime() /1000),
++  }, 'SECRET');
++};
++
++mongoose.model('User', UserSchema);
+diff --git a/package.json b/package.json
+index b65e728..9677899 100644
+--- a/package.json
++++ b/package.json
+@@ -11,9 +11,12 @@
+     "debug": "~2.2.0",
+     "ejs": "~2.3.3",
+     "express": "~4.13.1",
++    "express-jwt": "^3.1.0",
+     "jsonwebtoken": "^5.0.5",
+     "mongoose": "^4.1.4",
+     "morgan": "~1.6.1",
++    "passport": "^0.3.0",
++    "passport-local": "^1.0.0",
+     "serve-favicon": "~2.3.0"
+   }
+ }
+diff --git a/routes/index.js b/routes/index.js
+index ad5c634..9e5cc22 100644
+--- a/routes/index.js
++++ b/routes/index.js
+@@ -1,14 +1,58 @@
+-var express = require('express');
+-var router = express.Router();
++var express, router, mongoose, passport, jwt, auth,
++    Post, Comment, User;
++
++express = require('express');
++router = express.Router();
++mongoose = require('mongoose');
++passport = require('passport');
++jwt = require('express-jwt');
++
++Post = mongoose.model('Post');
++Comment = mongoose.model('Comment');
++User = mongoose.model('User');
++
++// Create a middleware for authentication jwt tokens in routes/index.js
++auth = jwt({secret: 'SECRET', userProperty: 'payload'});
+ 
+ /* GET home page. */
+ router.get('/', function(req, res, next) {
+   res.render('index', { title: 'Express' });
+ });
+ 
+-var mongoose = require('mongoose');
+-var Post = mongoose.model('Post');
+-var Comment = mongoose.model('Comment');
++/* POST /register - creates a user given a username and a password */
++router.post('/register', function(req, res, next){
++  var user;
++
++  if(!req.body.username || !req.body.password) {
++    return res.status(400).json({message: 'Please fill out all fields'});
++  }
++
++  user = new User();
++  user.username = req.body.username;
++  user.setPassword(req.body.password);
++  user.save(function(err) {
++    if(err) { return next(err); }
++
++    return res.json({token: user.generateJWT()});
++  });
++});
++
++/* POST /login - authenticates the user and returns a token to the client */
++router.post('/login', function(req, res, next) {
++  if(!req.body.username || !req.body.password) {
++    return res.status(400).json({message: 'Please fill out all fields'});
++  }
++
++  passport.authenticate('local', function(err, user, info) {
++    if(err) { return next(err); }
++
++    if(!user) {
++      return res.status(401).json(info);
++    }
++
++    return res.json({token: user.generateJWT()});
++  })(req, res, next);
++});
+ 
+ /* GET /posts - return a list of posts and associated metadata */
+ router.get('/posts', function (req, res, next) {
+@@ -20,8 +64,9 @@ router.get('/posts', function (req, res, next) {
+ });
+ 
+ /* POST /posts - create a new post */
+-router.post('/posts', function (req, res, next) {
++router.post('/posts', auth, function (req, res, next) {
+   var post = new Post(req.body);
++  post.author = req.payload.username;
+ 
+   post.save(function(err, post) {
+     if (err) { return next(err); }
+@@ -53,7 +98,7 @@ router.get('/posts/:post', function(req, res, next) {
+ });
+ 
+ /* PUT /posts/:id/upvote - upvote a post, notice we use the post ID in the URL */
+-router.put('/posts/:post/upvote', function(req, res, next) {
++router.put('/posts/:post/upvote', auth, function(req, res, next) {
+   req.post.upvote(function(err, post) {
+     if(err) { return next(err); }
+ 
+@@ -62,9 +107,10 @@ router.put('/posts/:post/upvote', function(req, res, next) {
+ });
+ 
+ /* POST /posts/:id/comments - add a new comment to a post by ID */
+-router.post('/posts/:post/comments', function(req, res, next) {
++router.post('/posts/:post/comments', auth, function(req, res, next) {
+   var comment = new Comment(req.body);
+   comment.post = req.post;
++  comment.author = req.payload.username;
+ 
+   comment.save(function(err, comment) {
+     if(err) { return next(err); }
+@@ -92,7 +138,7 @@ router.param('comment', function(req, res, next, id) {
+ });
+ 
+ /* PUT /posts/:id/comments/:id/upvote - upvote a comment */
+-router.put('/posts/:post/comments/:comment/upvote', function(req, res, next) {
++router.put('/posts/:post/comments/:comment/upvote', auth, function(req, res, next) {
+   req.comment.upvote(function(err, comment) {
+     if(err) { return next(err); }
+ 
