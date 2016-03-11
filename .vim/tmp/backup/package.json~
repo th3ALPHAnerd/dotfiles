@@ -1,42 +1,69 @@
 {
-    "name": "mean"
-  , "description": "Mongo"
-  , "version": "1.0.0"
-  , "private": false
-  , "author": "MEAN - A Modern Stack: MongoDB, ExpressJS, AngularJS, NodeJS. (BONUS: Passport User Support)."
-  , "engines": {
-        "node": "0.10.x"
-      , "npm":  "1.2.x"
-    }
-  , "scripts": {
-      "start": "NODE_ENV=development ./node_modules/.bin/nodemon server.js",
-      "test": "NODE_ENV=test ./node_modules/.bin/mocha --reporter spec test/test-*.js"
-    }
-  , "dependencies": {
-      "express": "latest"
-    , "jade": "latest"
-    , "mongoose": "latest"
-    , "connect-mongo": "latest"
-    , "connect-flash": "latest"
-    , "passport": "latest"
-    , "passport-local": "latest"
-    , "passport-facebook": "latest"
-    , "passport-twitter": "latest"
-    , "passport-github": "latest"
-    , "passport-google-oauth": "latest"
-    , "notifier": "latest"
-    , "underscore": "latest"
-    , "gzippo": "latest"
-    , "async": "latest"
-    , "view-helpers": "latest"
-    , "forever": "latest"
-    , "mean-logger": "latest"
-    , "bower": "latest"
+  "name": "tradeBinder",
+  "version": "1.0.0",
+  "keywords": [
+    "util",
+    "functional",
+    "server",
+    "client",
+    "browser"
+  ],
+  "author": "Dustin Halbrooks",
+  "contributors": [
+    "Chris Pickett",
+    "Kent Baker"
+  ],
+  "main": "./server.js",
+  "scripts": {
+    "setup": "./setup.js",
+    "test": "./node_modules/karma/bin/karma start"
+  },
+  "engines": {
+    "node": "5.4.x"
+  },
+  "dependencies": {
+    "async": "^1.5.2",
+    "bcrypt": "^0.8.5",
+    "boom": "^3.1.2",
+    "confidence": "^1.4.2",
+    "glue": "^3.2.0",
+    "good": "^6.6.0",
+    "good-console": "^5.3.1",
+    "good-file": "^5.1.2",
+    "good-http": "^5.1.0",
+    "handlebars": "^4.0.5",
+    "hapi": "^13.0.0",
+    "hapi-auth-basic": "^4.1.0",
+    "hapi-auth-jwt2": "^5.4.1",
+    "hapi-mongo-models": "^4.1.0",
+    "hoek": "^3.0.4",
+    "inert": "^3.2.0",
+    "joi": "^8.0.1",
+    "jsonwebtoken": "^5.7.0",
+    "mongodb": "^2.1.7",
+    "node-uuid": "^1.4.7",
+    "object-assign": "^4.0.1",
+    "promptly": "^1.0.0"
+  },
+  "devDependencies": {
+    "del": "^2.2.0",
+    "grunt": "*",
+    "grunt-karma": "*",
+    "gulp": "^3.9.1",
+    "gulp-bower": "0.0.13",
+    "gulp-concat": "^2.6.0",
+    "gulp-jshint": "^2.0.0",
+    "gulp-rename": "^1.2.2",
+    "gulp-sourcemaps": "^1.6.0",
+    "gulp-uglify": "^1.5.3",
+    "gulp-watch": "^4.3.5",
+    "jshint": "^2.9.1",
+    "karma": "^0.13.21",
+    "karma-chrome-launcher": "^0.2.2",
+    "karma-firefox-launcher": "*",
+    "karma-jasmine": "^0.3.7",
+    "karma-junit-reporter": "*",
+    "karma-phantomjs-launcher": "^1.0.0",
+    "phantomjs-prebuilt": "*"
   }
-  , "devDependencies": {
-        "supertest": "latest"
-      , "should": "latest"
-      , "mocha": "latest"
-      , "nodemon": "latest"
-    }
 }

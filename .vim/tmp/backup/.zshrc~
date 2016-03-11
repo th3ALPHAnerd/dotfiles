@@ -45,7 +45,7 @@ ZSH_THEME="robbyrussell"
 # Custom plugins may be added to ~/.oh-my-zsh/custom/plugins/
 # Example format: plugins=(rails git textmate ruby lighthouse)
 # Add wisely, as too many plugins slow down shell startup.
-plugins=(git command-not-found common-aliases dircycle debian) 
+plugins=(git command-not-found common-aliases dircycle docker docker-compose)
 
 # User configuration
 
@@ -81,4 +81,3 @@ source $ZSH/oh-my-zsh.sh
 
 export NVM_DIR="/home/b1shop/.nvm"
 [ -s "$NVM_DIR/nvm.sh" ] && . "$NVM_DIR/nvm.sh"  # This loads nvm
-o

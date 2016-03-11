@@ -1,0 +1,19 @@
+var fs, path,
+    processDir, filteredList;
+
+fs = require('fs');
+path = require('path');
+
+module.exports = function(dirName, extType, callback) {
+  fs.readdir(dirName, function (err, list) {
+    if (err) { return callback(err);  }
+
+    filteredList = list.filter(function (listItem) {
+      return path.extname(listItem) === "." + extType;
+    });
+
+    callback(null, data);
+  });
+
+};
+

@@ -1,0 +1,23 @@
+'use strict';
+
+const Hapi = require('hapi'),
+  Path = require('path'),
+  Fs = require('fs'),
+  rot13 = require('rot13-transform'),
+  server = new Hapi.Server();
+
+server.connection({
+  host: 'localhost',
+  port: Number(process.argv[2] || 8080)
+});
+
+server.route({
+  path: '/',
+  method: 'GET',
+  handler: (request, reply) => {
+    let file = Fs.createReadStream(Path.join(__dirname, './public/hapi-ness.txt'));
+    reply(file.pipe(rot13()));
+  }
+});
+
+server.start(() => { console.log('Server started at: ', server.info.uri); });

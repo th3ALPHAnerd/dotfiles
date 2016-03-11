@@ -1,0 +1,19 @@
+var fs, path,
+    processDir, data;
+
+fs = require('fs');
+path = require('path');
+
+module.export = function(dirName, extType, callback) {
+  fs.readdir(dirName, function (err, list) {
+    data = [];
+    for (var i = 0, len = list.length; i < len; i++) {
+      if (path.extname(list[i]) === "." + extType) {
+        data.push(list[i]);
+      }
+    }
+  });
+  if (err) { return callback(err); }
+  callback(null, data);
+};
+

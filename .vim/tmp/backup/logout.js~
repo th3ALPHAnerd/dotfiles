@@ -1,0 +1,42 @@
+'use strict';
+
+const Hoek = require('hoek');
+
+
+exports.register = function (server, options, next) {
+  options = Hoek.applyToDefaults({ basePath: '' }, options);
+
+
+  server.route({
+    method: 'get',
+    path: options.basePath + '/secure',
+    config: {
+      auth: {
+        mode: 'required',
+        strategy: 'jwt'
+      }
+    },
+    handler: function (request, reply) {
+      const Session = request.server.plugins['hapi-mongo-models'].Session;
+      const credentials = request.auth.credentials || { session: {} };
+      const session = credentials.session || {};
+
+      Session.findByIdAndDelete(session._id, (err, sessionDoc) => {
+        if (err) { return reply(err); }
+        if (!sessionDoc) { return reply({ message: 'Session not found.' }).code(404); }
+
+        request.auth.session.clear();
+        reply({ message: 'Success.' });
+      });
+    }
+  });
+
+
+  next();
+};
+
+
+exports.register.attributes = { 
+  name: 'secure',
+  version: '1.0.0'
+};
