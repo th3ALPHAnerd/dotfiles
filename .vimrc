@@ -51,7 +51,6 @@ Bundle "pangloss/vim-javascript"
 Bundle "marijnh/tern_for_vim"
 Bundle "othree/javascript-libraries-syntax.vim"
 
-Bundle "fatih/vim-go"
 Bundle "plasticboy/vim-markdown"
 
 Bundle "vim-scripts/c.vim"
@@ -133,7 +132,7 @@ set list
 set listchars=tab:▸\ ,trail:¬,nbsp:.,extends:❯,precedes:❮
 augroup ListChars2
     au!
-    autocmd filetype go set listchars+=tab:\ \ 
+    " autocmd filetype go set listchars+=tab:\ \ 
     autocmd ColorScheme * hi! link SpecialKey Normal
 augroup END
 
@@ -142,6 +141,10 @@ syntax on
 colorscheme jellybeans
 
 set t_Co=256
+
+" remove toolbars from gvim
+set guioptions -=m
+set guioptions -=T
 
 " session management
 let g:session_directory = "~/.vim/session"
@@ -159,6 +162,7 @@ nnoremap <F2> :GundoToggle<CR>
 nnoremap <F3> :TlistToggle<CR>
 nnoremap <F4> :TagbarToggle<CR>
 set pastetoggle=<F5>
+nnoremap <F6> mzgg=G`z
 
 " visual reselect of just pasted
 nnoremap gp `[v`]
@@ -193,7 +197,7 @@ nnoremap <leader>cd :cd %:p:h<CR>
 
 " ctrlP config
 let g:ctrlp_map = "<c-p>"
-nnoremap <leader>t :CtrlPMRU<CR>
+nnoremap <leader>p :CtrlPMRU<CR>
 nnoremap <leader>bp :CtrlPBuffer<CR>
 
 " easy motion rebinded
@@ -283,28 +287,6 @@ nnoremap <leader>a :Ag!
 " PROGRAMMING LANGUAGES
 "
 """"""""""""""""""""""""""""""""
-" vim-go settings
-let g:go_fmt_command = "goimports"
-let g:go_highlight_functiond = 1
-let g:go_highlight_methods = 1
-let g:go_highlight_structs = 1
-
-" vim-go bindings
-augroup FileType go
-  au!
-  au FileType go nmap gd <Plug>(go-def)
-  au FileType go nmap <Leader>dd <Plug>(go-def-vertical)
-
-  au FileType go nmap <Leader>dv <Plug>(go-doc-vertical)
-  au FileType go nmap <Leader>db <Plug>(go-doc-browser)
-
-  au FileType go nmap <Leader>i <Plug>(go-info)
-
-  au FileType go nmap <leader>r <Plug>(go-run)
-  au FileType go nmap <leader>b <Plug>(go-build)
-  au FileType go nmap <leader>t <Plug>(go-test)
-augroup END
-
 " General file runners for various languages
 function! LangRunner()
   if(&ft=="python")
@@ -371,12 +353,12 @@ function! HiInterestingWord(n)
 endfunction
 
 nnoremap <leader>hh :call clearmatches()<CR>:noh<CR>
-nnoremap <silent> <leader>hj :call HiInterestingWord(1)<cr>
-nnoremap <silent> <leader>hk :call HiInterestingWord(2)<cr>
-nnoremap <silent> <leader>hl :call HiInterestingWord(3)<cr>
-nnoremap <silent> <leader>hu :call HiInterestingWord(4)<cr>
-nnoremap <silent> <leader>hi :call HiInterestingWord(5)<cr>
-nnoremap <silent> <leader>ho :call HiInterestingWord(6)<cr>
+nnoremap <silent> <leader>h1 :call HiInterestingWord(1)<cr>
+nnoremap <silent> <leader>h2 :call HiInterestingWord(2)<cr>
+nnoremap <silent> <leader>h3 :call HiInterestingWord(3)<cr>
+nnoremap <silent> <leader>h4 :call HiInterestingWord(4)<cr>
+nnoremap <silent> <leader>h5 :call HiInterestingWord(5)<cr>
+nnoremap <silent> <leader>h6 :call HiInterestingWord(6)<cr>
 
 hi def InterestingWord1 guifg=#000000 ctermfg=16 guibg=#ffa724 ctermbg=214
 hi def InterestingWord2 guifg=#000000 ctermfg=16 guibg=#aeee00 ctermbg=154
