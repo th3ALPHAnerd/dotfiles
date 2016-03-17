@@ -1,0 +1,1 @@
+/home/b1shop/.nvimrc

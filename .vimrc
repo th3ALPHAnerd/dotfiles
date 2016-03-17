@@ -1,3 +1,10 @@
+"______ _      _        _   _   _             _
+"| ___ (_)    | |      | | | | ( )           (_)
+"| |_/ /_  ___| | _____| |_| |_|/ ___  __   ___ _ __ ___  _ __ ___
+"|  __/| |/ __| |/ / _ \ __| __| / __| \ \ / / | '_ ` _ \| '__/ __|
+"| |   | | (__|   <  __/ |_| |_  \__ \  \ V /| | | | | | | | | (__
+"\_|   |_|\___|_|\_\___|\__|\__| |___/ (_)_/ |_|_| |_| |_|_|  \___|
+"
 """"""""""""""""""""""""""""""""
 "
 " PACKAGE MANAGEMENT
@@ -19,7 +26,8 @@ Bundle "kien/ctrlp.vim"
 
 " vim main plugins
 Bundle "sjl/gundo.vim"
-Bundle "bling/vim-airline"
+Bundle "vim-airline/vim-airline"
+Bundle "vim-airline/vim-airline-themes"
 Bundle "jlanzarotta/bufexplorer"
 Bundle "scrooloose/syntastic.git"
 Bundle "vim-scripts/tComment"

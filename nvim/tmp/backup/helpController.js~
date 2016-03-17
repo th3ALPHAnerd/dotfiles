@@ -1,0 +1,47 @@
+(function () {
+    'use strict';
+
+    angular.module('help.helpController', [
+        'help.helpService'
+    ])
+            .controller('helpController', ['helpService', '$state', helpController]);
+
+    function helpController(helpService, $state) {
+        var vm = this;
+
+        function sendHelp() {
+
+            var data = {
+                name: vm.name,
+                email: vm.email,
+                subject: vm.subject,
+                question: vm.question
+            };
+
+            helpService.sendHelp(data).then(function (response) {
+
+                if (response.succes) {
+                    
+                } else {
+                    alert(response.message);
+                }
+
+            });
+            
+            reset();
+
+            $state.go('helpSent');
+
+        }
+
+        function reset() {
+            vm.name = '';
+            vm.email = '';
+            vm.subject = '';
+            vm.question = '';
+        }
+
+        vm.send = sendHelp;
+    }
+
+})();
