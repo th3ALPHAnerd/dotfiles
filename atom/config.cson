@@ -1,0 +1,66 @@
+"*":
+  "atom-beautify":
+    general:
+      _analyticsUserId: "063aa60d-b03d-4611-a2df-273e9cda9687"
+    html:
+      indent_size: 2
+      preserve_newlines: false
+    js:
+      break_chained_methods: true
+      end_with_newline: true
+      eval_code: true
+      indent_size: 2
+      jslint_happy: true
+      keep_function_indentation: true
+      preserve_newlines: false
+      space_after_anon_function: true
+    jsx:
+      break_chained_methods: true
+      end_with_newline: true
+      eval_code: true
+      indent_size: 2
+      jslint_happy: true
+      keep_array_indentation: true
+      keep_function_indentation: true
+      space_after_anon_function: true
+  core:
+    autoHideMenuBar: true
+    disabledPackages: [
+      "react"
+      "intentions"
+    ]
+    packagesWithKeymapsDisabled: []
+    projectHome: "/home/b1shop/code"
+    telemetryConsent: "no"
+    themes: [
+      "one-dark-ui"
+      "nord-atom-syntax"
+    ]
+  editor:
+    fontFamily: "hack"
+    invisibles: {}
+    preferredLineLength: 150
+    scrollPastEnd: true
+    showIndentGuide: true
+    showInvisibles: true
+    softWrap: true
+  "exception-reporting":
+    userId: "8093ac98-dcaf-dcad-5d0c-7fdebefd61e3"
+  linter: {}
+  "vim-mode":
+    useClipboardAsDefaultRegister: true
+    useSmartcaseForSearch: true
+  "vim-mode-plus":
+    automaticallyEscapeInsertModeOnActivePaneItemChange: true
+    incrementalSearchVisitDirection: "relative"
+    keymapIAndAToInsertAtTargetWhenHasOccurrence: true
+    keymapSemicolonToInnerAnyPairInOperatorPendingMode: true
+    keymapSemicolonToInnerAnyPairInVisualMode: true
+    keymapUnderscoreToReplaceWithRegister: true
+    keymapYToYankToLastCharacterOfLine: true
+    reuseFindForRepeatFind: true
+    useSmartcaseForFind: true
+    useSmartcaseForSearch: true
+    useSmartcaseForSearchCurrentWord: true
+  welcome:
+    showOnStartup: false
